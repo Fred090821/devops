@@ -15,7 +15,7 @@ pipeline {
                 script {
                     properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
                 }
-                git 'https://github.com/Fred090821/pipelineascode.git'
+                git 'https://github.com/Fred090821/devops.git'
             }
         }
         stage(' run backend =====>') {
