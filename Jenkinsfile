@@ -5,7 +5,7 @@ pipeline {
             buildDiscarder(logRotator(numToKeepStr:'2', daysToKeepStr:'1'))
    }
     environment{
-       registry = 'adedo2009/devops'
+       REGISTRY = 'adedo2009/devops'
        DOCKERHUB_CREDENTIALS = credentials('docker-hub')
        dockerImage = ''
    }
@@ -153,12 +153,12 @@ pipeline {
                     try{
                         if (checkOs() == 'Windows') {
                             bat 'docker tag devops registry:latest'
-                            bat 'docker tag devops registry:${BUILD_NUMBER}'
-                            bat 'docker push -a registry'
+                            bat 'docker tag devops $REGISTRY:${BUILD_NUMBER}'
+                            bat 'docker push -a $REGISTRY'
                         } else {
-                            sh 'docker tag devops registry:latest'
-                            sh 'docker tag devops registry:${BUILD_NUMBER}'
-                            sh 'docker push -a registry'
+                            sh 'docker tag devops $REGISTRY:latest'
+                            sh 'docker tag devops $REGISTRY:${BUILD_NUMBER}'
+                            sh 'docker push -a $REGISTRY'
                         }
                     }catch(Exception e){
                         echo 'Exception Pushing Docker Build'
