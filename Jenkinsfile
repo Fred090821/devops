@@ -18,7 +18,7 @@ pipeline {
                 git 'https://github.com/Fred090821/devops.git'
             }
         }
-        stage(' run backend =====>') {
+        stage(' Start Back End Server...') {
             steps {
                 script {
                     try{
