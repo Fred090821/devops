@@ -208,7 +208,7 @@ pipeline {
                 try{
                     if (checkOs() == 'Windows') {
                          bat '/usr/bin/python3 clean_environment.py'
-                         bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
+                         bat 'docker-compose -f docker-compose.yml down'
                          bat 'docker rmi adedo2009/devops:latest'
                          bat 'docker system prune -a --volumes -f'
                          bat 'docker logout'
