@@ -15,8 +15,8 @@ driver = webdriver.Chrome()
 # Check that the user's name element is showing (web element exists).
 # Print user name (using locator).
 class FrontEndTest(TestCase):
-    def test_John_using_selenium(self):
-        print(" Test creation of user John using SELENIUM")
+    def test_john_using_selenium(self):
+        print(" Test creation of user john using SELENIUM")
 
         # since the utility get_next_available_row_id_from_db generate the next available
         # id, we need the id currently so => get_next_available_row_id_from_db() - 1
@@ -33,7 +33,7 @@ class FrontEndTest(TestCase):
             except NoSuchElementException:
                 print("User name element not found.")
 
-            time.sleep(15)  # Waiting for demonstration purposes
+            time.sleep(10)  # Waiting for demonstration purposes
 
         finally:
             driver.quit()
