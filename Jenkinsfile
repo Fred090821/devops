@@ -6,7 +6,7 @@ pipeline {
    }
     environment{
        registry = 'adedo2009/devops'
-       registryCredential = 'docker_hub'
+       DOCKERHUB_CREDENTIALS = credentials('docker-hub')
        dockerImage = ''
    }
     stages {
@@ -50,6 +50,7 @@ pipeline {
                 }
             }
         }
+
         stage(' run backend testing =====>') {
             steps {
                 script {
@@ -114,7 +115,6 @@ pipeline {
                 }
             }
         }
-
         stage('Docker Build Rest API image =====>') {
             steps {
                script {
@@ -131,18 +131,34 @@ pipeline {
                 }
             }
         }
+        stage(' Login to Docker Hub =====>') {
+            steps {
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                        } else {
+                            sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Login into Ducker Hub'
+                        error('Aborting The Build')
+                    }
+                }
+            }
+        }
         stage('Docker Tag & Push Image =====>') {
             steps {
                script {
                     try{
                         if (checkOs() == 'Windows') {
-                            bat 'docker tag devops adedo2009/devops:latest'
-                            bat 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
-                            bat 'docker push -a adedo2009/devops'
+                            bat 'docker tag devops registry:latest'
+                            bat 'docker tag devops registry:${BUILD_NUMBER}'
+                            bat 'docker push -a registry'
                         } else {
-                            sh 'docker tag devops adedo2009/devops:latest'
-                            sh 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
-                            sh 'docker push -a adedo2009/devops'
+                            sh 'docker tag devops registry:latest'
+                            sh 'docker tag devops registry:${BUILD_NUMBER}'
+                            sh 'docker push -a registry'
                         }
                     }catch(Exception e){
                         echo 'Exception Pushing Docker Build'
@@ -188,25 +204,28 @@ pipeline {
     }
 
     post {
-//         always {
-//             script {
-//                 try{
-//                     if (checkOs() == 'Windows') {
-//                          bat '/usr/bin/python3 clean_environment.py'
-//                          bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
-//                          bat 'docker rmi adedo2009/devops_rest:latest'
-//                     } else {
-//                          sh '/usr/bin/python3 clean_environment.py'
-//                          sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
-//                          sh 'docker rmi adedo2009/devops_rest:latest'
-//                          sh 'docker system prune -a --volumes -f'
-//                     }
-//                 }catch(Exception e){
-//                         echo 'Exception docker compose starting container'
-//                         error('Aborting the build')
-//                     }
-//             }
-//         }
+        always {
+            script {
+                try{
+                    if (checkOs() == 'Windows') {
+                         bat '/usr/bin/python3 clean_environment.py'
+                         bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
+                         bat 'docker rmi adedo2009/devops:latest'
+                         bat 'docker system prune -a --volumes -f'
+                         bat 'docker logout'
+                    } else {
+                         sh '/usr/bin/python3 clean_environment.py'
+                         sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
+                         sh 'docker rmi adedo2009/devops:latest'
+                         sh 'docker system prune -a --volumes -f'
+                         sh 'docker logout'
+                    }
+                }catch(Exception e){
+                        echo 'Exception docker compose starting container'
+                        error('Aborting the build')
+                    }
+            }
+        }
         success {
             echo 'All test run successfully'
         }
