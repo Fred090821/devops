@@ -5,7 +5,7 @@ pipeline {
             buildDiscarder(logRotator(numToKeepStr:'2', daysToKeepStr:'1'))
    }
     environment{
-       registry = 'adedo2009/rest_app'
+       registry = 'adedo2009/devops'
        registryCredential = 'docker_hub'
        dockerImage = ''
    }
@@ -120,9 +120,9 @@ pipeline {
                script {
                     try{
                         if (checkOs() == 'Windows') {
-                           bat 'docker build -t devops_rest .'
+                           bat 'docker build -t devops .'
                         } else {
-                            sh 'docker build -t devops_rest .'
+                            sh 'docker build -t devops .'
                         }
                     }catch(Exception e){
                         echo 'Exception Running Docker Build'
@@ -131,26 +131,26 @@ pipeline {
                 }
             }
         }
-//         stage('tag & push image =====>') {
-//             steps {
-//                script {
-//                     try{
-//                         if (checkOs() == 'Windows') {
-//                             bat 'docker tag devops_rest adedo2009/devops_rest:latest'
-//                             bat 'docker tag devops_rest adedo2009/devops_rest:${BUILD_NUMBER}'
-//                             bat 'docker push -a adedo2009/devops_rest'
-//                         } else {
-//                             sh 'docker tag devops_rest adedo2009/devops_rest:latest'
-//                             sh 'docker tag devops_rest adedo2009/devops_rest:${BUILD_NUMBER}'
-//                             sh 'docker push -a adedo2009/devops_rest'
-//                         }
-//                     }catch(Exception e){
-//                         echo 'Exception Pushing Docker Build'
-//                         error('Aborting the build')
-//                     }
-//                 }
-//             }
-//         }
+        stage('Docker Tag & Push Image =====>') {
+            steps {
+               script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat 'docker tag devops adedo2009/devops:latest'
+                            bat 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
+                            bat 'docker push -a adedo2009/devops'
+                        } else {
+                            sh 'docker tag devops adedo2009/devops:latest'
+                            sh 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
+                            sh 'docker push -a adedo2009/devops'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Pushing Docker Build'
+                        error('Aborting the build')
+                    }
+                }
+            }
+        }
 //         stage('Start Containers with docker compose =====>') {
 //             steps {
 //                script {
