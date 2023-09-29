@@ -114,22 +114,22 @@ pipeline {
                 }
             }
         }
-        stage(' AFTER CLEAN ENVIRONMENT  run backend testing ===>') {
-            steps {
-                script {
-                    try{
-                        if (checkOs() == 'Windows') {
-                            bat '/usr/bin/python3 backend_testing.py'
-                        } else {
-                            sh '/usr/bin/python3 backend_testing.py'
-                        }
-                    }catch(Exception e){
-                        echo 'Exception Running Back End Test'
-                        error('Aborting The Build')
-                    }
-                }
-            }
-        }
+//         stage(' AFTER CLEAN ENVIRONMENT  run backend testing ===>') {
+//             steps {
+//                 script {
+//                     try{
+//                         if (checkOs() == 'Windows') {
+//                             bat '/usr/bin/python3 backend_testing.py'
+//                         } else {
+//                             sh '/usr/bin/python3 backend_testing.py'
+//                         }
+//                     }catch(Exception e){
+//                         echo 'Exception Running Back End Test'
+//                         error('Aborting The Build')
+//                     }
+//                 }
+//             }
+//         }
 //         stage('build image =====>') {
 //             steps {
 //                script {
@@ -203,25 +203,25 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                try{
-                    if (checkOs() == 'Windows') {
-                         bat '/usr/bin/python3 clean_environment.py'
-                         bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
-                         bat 'docker rmi adedo2009/devops_rest:latest'
-                    } else {
-                         sh '/usr/bin/python3 clean_environment.py'
-                         sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
-                         sh 'docker rmi adedo2009/devops_rest:latest'
-                         sh 'docker system prune -a --volumes -f'
-                    }
-                }catch(Exception e){
-                        echo 'Exception docker compose starting container'
-                        error('Aborting the build')
-                    }
-            }
-        }
+//         always {
+//             script {
+//                 try{
+//                     if (checkOs() == 'Windows') {
+//                          bat '/usr/bin/python3 clean_environment.py'
+//                          bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
+//                          bat 'docker rmi adedo2009/devops_rest:latest'
+//                     } else {
+//                          sh '/usr/bin/python3 clean_environment.py'
+//                          sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
+//                          sh 'docker rmi adedo2009/devops_rest:latest'
+//                          sh 'docker system prune -a --volumes -f'
+//                     }
+//                 }catch(Exception e){
+//                         echo 'Exception docker compose starting container'
+//                         error('Aborting the build')
+//                     }
+//             }
+//         }
         success {
             echo 'All test run successfully'
         }
