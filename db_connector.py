@@ -164,20 +164,29 @@ def populate_config_table():
             'browser': 'Chrome'
         }
 
-        insert_query = " INSERT INTO config (id, url, user_name, browser) VALUES (%s,%s, %s, %s) "
-
         try:
-            print(f"INSERTING http://127.0.0.1:5003/users/")
-            # Execute the SQL query
-            # Retrieve the config data for a specific user_id
-            cursor.execute(insert_query, (
-                insert_data['id'], insert_data['url'], insert_data['user_name'], insert_data['browser']))
-            conn.commit()
+            select_query = "SELECT url, user_name FROM config WHERE user_name = %s"
+            cursor.execute(select_query, 'john')
+            result = cursor.fetchone()
+            if result:
+                assert result[0] == 'http://127.0.0.1:5003/users/'
+            else:
+                try:
+                    insert_query = " INSERT INTO config (id, url, user_name, browser) VALUES (%s,%s, %s, %s) "
+                    print(f"INSERTING http://127.0.0.1:5003/users/")
+                    # Execute the SQL query
+                    # Retrieve the config data for a specific user_id
+                    cursor.execute(insert_query, (
+                        insert_data['id'], insert_data['url'], insert_data['user_name'], insert_data['browser']))
+                    conn.commit()
 
-            logging.info("data inserted into config table")
+                    logging.info("data inserted into config table")
+
+                except pymysql.MySQLError as query_error:
+                    logging.error(f"Query execution error with error: {query_error}")
 
         except pymysql.MySQLError as query_error:
-            logging.error(f"Query execution error with error: {query_error}")
+            print(f"Query execution error: {query_error}")
 
     except pymysql.MySQLError as query_error:
         logging.error(f"Query execution error: {query_error}")
