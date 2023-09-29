@@ -15,10 +15,10 @@ pipeline {
                 script {
                     properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
                 }
-                git 'https://github.com/Fred090821/pipelineascode.git'
+                git 'https://github.com/Fred090821/devops.git'
             }
         }
-        stage(' run backend =====>') {
+        stage(' Start Back End Server...') {
             steps {
                 script {
                     try{
@@ -171,11 +171,11 @@ pipeline {
 //                script {
 //                     try{
 //                         if (checkOs() == 'Windows') {
-//                             bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/pipelineascode/docker-compose.yml up -d --wait'
+//                             bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml up -d --wait'
 //                             bat 'docker-compose ps'
 //                         } else {
-//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/pipelineascode/docker-compose.yml up -d --wait'
-//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/pipelineascode/docker-compose.yml ps'
+//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml up -d --wait'
+//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml ps'
 //                         }
 //                     }catch(Exception e){
 //                         echo 'Exception docker compose starting container'
@@ -208,11 +208,11 @@ pipeline {
                 try{
                     if (checkOs() == 'Windows') {
                          bat '/usr/bin/python3 clean_environment.py'
-                         bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/pipelineascode/docker-compose.yml down'
+                         bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down'
                          bat 'docker rmi adedo2009/devops_rest:latest'
                     } else {
                          sh '/usr/bin/python3 clean_environment.py'
-                         sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/pipelineascode/docker-compose.yml down --remove-orphans -v'
+                         sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
                          sh 'docker rmi adedo2009/devops_rest:latest'
                          sh 'docker system prune -a --volumes -f'
                     }

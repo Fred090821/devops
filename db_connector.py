@@ -159,7 +159,7 @@ def populate_config_table():
         insert_data = {
             'config_id': '1',
             'url': 'http://127.0.0.1:5003/users/',
-            'user_name': 'John',
+            'user_name': 'john',
             'browser': 'Chrome'
         }
 

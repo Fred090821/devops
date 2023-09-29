@@ -15,35 +15,40 @@ from db_connector import connect_to_database, close_connection, setup_database, 
 # Check posted data was stored inside DB (users table).
 class IntegrationTests(TestCase):
 
+    # global variables
+    api_url = None
+    user_name = None
+    url_link_data = None
+    last_added_user_id = None
+
     @classmethod
     def setUpClass(cls):
         print("Setting up database tables at class level...")
         setup_database()
         populate_config_table()
 
-    def setUp(self):
-        print("Retrieving data from config table at test level...")
+        print("Retrieving data from config table at class level...")
 
-        self.url_link_data = get_app_configuration_from_db()
-        self.api_url = None
-        self.user_name = None
-        self.post_data = None
-        self.last_added_user_id = None
+        cls.url_link_data = get_app_configuration_from_db()
+        cls.api_url = None
+        cls.user_name = None
+        cls.post_data = None
+        cls.last_added_user_id = None
 
-        if self.url_link_data:
-            self.user_name = self.url_link_data[0]
-            self.api_url = self.url_link_data[1]
-            self.post_data = {"user_name": self.user_name}
+        if cls.url_link_data:
+            cls.user_name = cls.url_link_data[0]
+            cls.api_url = cls.url_link_data[1]
+            cls.post_data = {"user_name": cls.user_name}
 
-    def test_step_1_post_John_status_200(self):
-        print("Test creation of user John with POST")
+    def test_step_1_post_john_status_200(self):
+        print("Test creation of user john with POST")
 
-        post_response = requests.post(self.api_url, json=self.post_data)
+        post_response = requests.post(self.api_url, json={"user_name": self.user_name})
         pytest.last_added_user_id = post_response.json().get("added_user_id")
         assert post_response.status_code == 200
 
-    def test_step_2_get_John_status_200(self):
-        print(" Test retrieving of user John with GET")
+    def test_step_2_get_john_status_200(self):
+        print(" Test retrieving of user john with GET")
 
         get_response = requests.get(self.api_url + str(pytest.last_added_user_id))
         self.assertEqual(get_response.status_code, 200)
@@ -54,8 +59,8 @@ class IntegrationTests(TestCase):
         # Assert the actual JSON content matches the expected JSON content
         assert extract_user_name == self.user_name, f"Unexpected JSON content: {extract_user_name}"
 
-    def test_step_3_database_verification_for_John_created_200(self):
-        print(" Test database for creation of user John using parametrized query")
+    def test_step_3_database_verification_for_john_created_200(self):
+        print(" Test database for creation of user john using parametrized query")
 
         conn = None
         cursor = None

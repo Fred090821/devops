@@ -11,6 +11,8 @@ url2 = 'http://127.0.0.1:5001/stop_server'
 
 
 def make_request_with_retry(url):
+    logging.info(f"Stopping Server url: {url} .")
+
     for retry_attempt in range(max_retries):
         try:
             response = requests.get(url)
