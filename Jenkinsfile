@@ -117,7 +117,7 @@ pipeline {
         }
         stage('Docker Build Rest API image =====>') {
             steps {
-               script {
+                script {
                     try{
                         if (checkOs() == 'Windows') {
                            bat 'docker build -t devops .'
@@ -149,7 +149,7 @@ pipeline {
         }
         stage('Docker Tag & Push Image =====>') {
             steps {
-               script {
+                script {
                     try{
                         if (checkOs() == 'Windows') {
                             bat 'docker tag devops registry:latest'
