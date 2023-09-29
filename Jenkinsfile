@@ -152,13 +152,13 @@ pipeline {
                 script {
                     try{
                         if (checkOs() == 'Windows') {
-                            bat 'docker tag devops registry:latest'
-                            bat 'docker tag devops $REGISTRY:${BUILD_NUMBER}'
+                            bat 'docker tag devops adedo2009/devops:latest'
+                            bat 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
                             bat 'docker push -a $REGISTRY'
                         } else {
-                            sh 'docker tag devops $REGISTRY:latest'
-                            sh 'docker tag devops $REGISTRY:${BUILD_NUMBER}'
-                            sh 'docker push -a $REGISTRY'
+                            sh 'docker tag devops adedo2009/devops:latest'
+                            sh 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
+                            sh 'docker push -a adedo2009/devops'
                         }
                     }catch(Exception e){
                         echo 'Exception Pushing Docker Build'
