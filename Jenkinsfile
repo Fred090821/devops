@@ -114,38 +114,23 @@ pipeline {
                 }
             }
         }
-//         stage(' AFTER CLEAN ENVIRONMENT  run backend testing ===>') {
-//             steps {
-//                 script {
-//                     try{
-//                         if (checkOs() == 'Windows') {
-//                             bat '/usr/bin/python3 backend_testing.py'
-//                         } else {
-//                             sh '/usr/bin/python3 backend_testing.py'
-//                         }
-//                     }catch(Exception e){
-//                         echo 'Exception Running Back End Test'
-//                         error('Aborting The Build')
-//                     }
-//                 }
-//             }
-//         }
-//         stage('build image =====>') {
-//             steps {
-//                script {
-//                     try{
-//                         if (checkOs() == 'Windows') {
-//                            bat 'docker build -t devops_rest .'
-//                         } else {
-//                             sh 'docker build -t devops_rest .'
-//                         }
-//                     }catch(Exception e){
-//                         echo 'Exception Running Docker Build'
-//                         error('Aborting the build')
-//                     }
-//                 }
-//             }
-//         }
+
+        stage('Docker Build Rest API image =====>') {
+            steps {
+               script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                           bat 'docker build -t devops_rest .'
+                        } else {
+                            sh 'docker build -t devops_rest .'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Running Docker Build'
+                        error('Aborting the build')
+                    }
+                }
+            }
+        }
 //         stage('tag & push image =====>') {
 //             steps {
 //                script {
