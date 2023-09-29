@@ -223,7 +223,7 @@ pipeline {
                 }catch(Exception e){
                         echo 'Exception docker compose starting container'
                         error('Aborting the build')
-                    }
+                }
             }
         }
         success {
