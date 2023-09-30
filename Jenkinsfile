@@ -107,6 +107,10 @@ pipeline {
                             bat '/usr/bin/python3 clean_environment.py'
                         } else {
                              sh '/usr/bin/python3 clean_environment.py'
+                             sh 'docker-compose -f docker-compose.yml down --remove-orphans -v'
+                             sh 'docker rmi adedo2009/devops:latest'
+                             sh 'docker system prune -a --volumes -f'
+                             sh 'docker logout'
                         }
                     }catch(Exception e){
                         echo 'Exception Cleaning The Environment'
@@ -218,8 +222,8 @@ pipeline {
                          bat 'docker system prune -a --volumes -f'
                          bat 'docker logout'
                     } else {
-//                       sh '/usr/bin/python3 clean_environment.py'
-//                       sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml down --remove-orphans -v'
+                         sh '/usr/bin/python3 clean_environment.py'
+                         sh 'docker-compose -f docker-compose.yml down --remove-orphans -v'
                          sh 'docker rmi adedo2009/devops:latest'
                          sh 'docker system prune -a --volumes -f'
                          sh 'docker logout'
