@@ -2,7 +2,7 @@ import logging
 import time
 import unittest
 from unittest import TestCase
-
+import logging
 import pymysql
 import pytest
 import requests
@@ -31,11 +31,11 @@ class IntegrationTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        print("Setting up database tables at class level...")
+        logging.info("Setting up database tables at class level...")
         setup_database()
         populate_config_table()
 
-        print("Retrieving data from config table at class level...")
+        logging.info("Retrieving data from config table at class level...")
 
         cls.url_link_data = get_app_configuration_from_db()
         cls.api_url = None
@@ -50,14 +50,14 @@ class IntegrationTest(TestCase):
             cls.post_data = {"user_name": cls.user_name}
 
     def test_post_john_status_200(self):
-        print("Test creation of user john with POST")
+        logging.info("Test creation of user john with POST")
 
         post_response = requests.post(self.api_url, json={"user_name": self.user_name})
         pytest.last_added_user_id = post_response.json().get("added_user_id")
         assert post_response.status_code == 200
 
     def test_step_2_get_user_name_john_status_200(self):
-        print(" Test retrieving of user john with GET")
+        logging.info(" Test retrieving of user john with GET")
 
         get_response = requests.get(self.api_url + str(pytest.last_added_user_id))
         self.assertEqual(get_response.status_code, 200)
@@ -69,7 +69,7 @@ class IntegrationTest(TestCase):
         assert extract_user_name == self.user_name, f"Unexpected JSON content: {extract_user_name}"
 
     def test_step_3__database_verification_for_john_created_200(self):
-        print(" Test database for creation of user john using parametrized query")
+        logging.info(" Test database for creation of user john using parametrized query")
 
         conn = None
         cursor = None
@@ -86,21 +86,21 @@ class IntegrationTest(TestCase):
                 cursor.execute(select_query, str(pytest.last_added_user_id, ))
                 result = cursor.fetchone()
                 if result:
-                    print(self.user_name + " = " + str(result[1]))
+                    logging.info(self.user_name + " = " + str(result[1]))
                     assert result[1] == self.user_name
                 else:
                     assert False, "condition not met"
 
             except pymysql.MySQLError as query_error:
-                print(f"Query execution error: {query_error}")
+                logging.info(f"Query execution error: {query_error}")
 
         finally:
-            print("close all connections")
+            logging.info("close all connections")
             # Close the connection and cursor
             close_connection(conn, cursor)
 
     def test_step_4_get_user_name_john_status_200_using_selenium(self):
-        print(" Test creation of user john using SELENIUM")
+        logging.info(" Test creation of user john using SELENIUM")
 
         if pytest.last_added_user_id is not None:
             url_selenium = self.api_url + str(pytest.last_added_user_id)
@@ -108,7 +108,7 @@ class IntegrationTest(TestCase):
             if self.browser == "Chrome":
                 driver = webdriver.Chrome()
 
-                print(f"BROWSER : %S", self.browser)
+                logging.info(f"BROWSER : %S", self.browser)
                 try:
                     driver.get(url_selenium)
 
@@ -126,7 +126,7 @@ class IntegrationTest(TestCase):
 
     # @classmethod
     # def tearDownClass(cls):
-    #     print(" Clear test context at class level")
+    #     logging.info(" Clear test context at class level")
     #     delete_all_rows('users')
     #     delete_all_rows('config')
 

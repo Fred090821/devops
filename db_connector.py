@@ -181,7 +181,7 @@ def populate_config_table():
                     logging.error(f"Query execution error with error: {query_error}")
 
         except pymysql.MySQLError as query_error:
-            print(f"Query execution error: {query_error}")
+            logging.error   (f"Query execution error: {query_error}")
 
     except pymysql.MySQLError as query_error:
         logging.error(f"Query execution error: {query_error}")

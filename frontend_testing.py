@@ -1,7 +1,7 @@
 import time
 import unittest
 from unittest import TestCase
-
+import logging
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -13,10 +13,10 @@ driver = webdriver.Chrome()
 # Start a Selenium Webdriver session.
 # Navigate to web interface URL using an existing user id.
 # Check that the user's name element is showing (web element exists).
-# Print user name (using locator).
+# logging.info user name (using locator).
 class FrontEndTest(TestCase):
     def test_john_using_selenium(self):
-        print(" Test creation of user john using SELENIUM")
+        logging.info(" Test creation of user john using SELENIUM")
 
         # since the utility get_next_available_row_id_from_db generate the next available
         # id, we need the id currently so => get_next_available_row_id_from_db() - 1
@@ -25,13 +25,13 @@ class FrontEndTest(TestCase):
         url_to_test = "http://127.0.0.1:5001/users/get_user_data/" + str(self.user_Id)
         try:
             driver.get(url_to_test)
-            print("Current URL:", driver.current_url)
+            logging.info("Current URL:", driver.current_url)
 
             try:
                 username = driver.find_element(By.ID, "user")
-                print("User Name:", username.text)
+                logging.info("User Name:", username.text)
             except NoSuchElementException:
-                print("User name element not found.")
+                logging.info("User name element not found.")
 
             time.sleep(10)  # Waiting for demonstration purposes
 
