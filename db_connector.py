@@ -1,7 +1,5 @@
 import logging
-
 import pymysql
-
 import config
 
 
@@ -81,7 +79,7 @@ def get_app_configuration_from_db():
             config_data = cursor.fetchone()
 
             if config_data:
-                print("---- config_data :: %s", config_data)
+                logging.info("---- config_data :: %s", config_data)
                 return config_data
 
         except pymysql.MySQLError as query_error:
@@ -133,7 +131,7 @@ def setup_database():
         for query in create_table_queries:
             cursor.execute(query)
 
-        print(f"Tables created successfully if not exist already.")
+        logging.info(f"Tables created successfully if not exist already.")
 
     except pymysql.MySQLError as query_error:
         logging.error(f"Query execution error: {query_error}")
@@ -165,15 +163,12 @@ def populate_config_table():
         }
 
         try:
-            select_query = "SELECT url, user_name FROM config WHERE user_name = %s"
-            cursor.execute(select_query, 'john')
+            select_query = "SELECT url, user_name FROM config WHERE url = %s"
+            cursor.execute(select_query, 'http://127.0.0.1:5003/users/')
             result = cursor.fetchone()
-            if result:
-                assert result[0] == 'http://127.0.0.1:5003/users/'
-            else:
+            if not result:
                 try:
                     insert_query = " INSERT INTO config (id, url, user_name, browser) VALUES (%s,%s, %s, %s) "
-                    print(f"INSERTING http://127.0.0.1:5003/users/")
                     # Execute the SQL query
                     # Retrieve the config data for a specific user_id
                     cursor.execute(insert_query, (
