@@ -279,32 +279,32 @@ pipeline {
 //         }
 
     }
-    post {
-        always {
-        echo '=== post Clean Environment ==='
-            script {
-                try{
-                    if (checkOs() == 'Windows') {
-                         bat '/usr/bin/python3 clean_environment.py'
-                         bat 'docker-compose -f docker-compose.yml down'
-                         bat 'docker rmi adedo2009/devops:latest'
-                         bat 'docker system prune -a --volumes -f'
-                         bat 'docker logout'
-                    } else {
-                         sh '''
-                            /usr/bin/python3 clean_environment.py
-                             sh 'docker-compose -f docker-compose.yml down --remove-orphans -v
-                             sh 'docker rmi adedo2009/devops:latest
-                             sh 'docker system prune -a --volumes -f
-                             sh 'docker logout
-                         '''
-                    }
-                }catch(Exception e){
-                        echo 'Exception docker compose starting container'
-                        error('Aborting the build')
-                }
-            }
-        }
+//     post {
+//         always {
+//         echo '=== post Clean Environment ==='
+//             script {
+//                 try{
+//                     if (checkOs() == 'Windows') {
+//                          bat '/usr/bin/python3 clean_environment.py'
+//                          bat 'docker-compose -f docker-compose.yml down'
+//                          bat 'docker rmi adedo2009/devops:latest'
+//                          bat 'docker system prune -a --volumes -f'
+//                          bat 'docker logout'
+//                     } else {
+//                          sh '''
+//                             /usr/bin/python3 clean_environment.py
+//                              sh 'docker-compose -f docker-compose.yml down --remove-orphans -v
+//                              sh 'docker rmi adedo2009/devops:latest
+//                              sh 'docker system prune -a --volumes -f
+//                              sh 'docker logout
+//                          '''
+//                     }
+//                 }catch(Exception e){
+//                         echo 'Exception docker compose starting container'
+//                         error('Aborting the build')
+//                 }
+//             }
+//         }
         success {
             echo 'All test run successfully'
         }
