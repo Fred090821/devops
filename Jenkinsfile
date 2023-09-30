@@ -10,6 +10,58 @@ pipeline {
        dockerImage = ''
    }
     stages {
+        stage(' Verify Tooling ') {
+            steps {
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat '''
+                               docker version
+                               docker info
+                               docker compose version
+                               python --version
+                            '''
+                        } else {
+                            sh '''
+                              docker version
+                              docker info
+                              docker compose version
+                              python --version
+                            '''
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Running Back End Server'
+                        error('Aborting The Build')
+                    }
+                }
+            }
+        }
+        stage(' Prune Docker Data ') {
+            steps {
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat '''
+                               docker-compose -f docker-compose.yml down --remove-orphans -v
+                               docker rmi adedo2009/devops:latest
+                               docker system prune -a --volumes -f
+                               docker logout
+                             '''
+                        } else {
+                            sh '''
+                               docker-compose -f docker-compose.yml down --remove-orphans -v
+                               docker rmi adedo2009/devops:latest
+                               docker system prune -a --volumes -f
+                               docker logout
+                             '''
+                        }
+                    }catch(Exception e){
+                        echo 'Exception pruning the data'
+                        error('Aborting The Build')
+                    }
+                }
+            }
+        }
          stage(' Checkout Devops Code') {
             steps {
                 script {
@@ -104,13 +156,13 @@ pipeline {
                 script {
                     try{
                         if (checkOs() == 'Windows') {
-                            bat '/usr/bin/python3 clean_environment.py'
+                            bat '''
+                               /usr/bin/python3 clean_environment.py
+                             '''
                         } else {
-                             sh '/usr/bin/python3 clean_environment.py'
-                             sh 'docker-compose -f docker-compose.yml down --remove-orphans -v'
-                             sh 'docker rmi adedo2009/devops:latest'
-                             sh 'docker system prune -a --volumes -f'
-                             sh 'docker logout'
+                             sh '''
+                               /usr/bin/python3 clean_environment.py
+                             '''
                         }
                     }catch(Exception e){
                         echo 'Exception Cleaning The Environment'
@@ -156,13 +208,17 @@ pipeline {
                 script {
                     try{
                         if (checkOs() == 'Windows') {
-                            bat 'docker tag devops adedo2009/devops:latest'
-                            bat 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
-                            bat 'docker push -a $REGISTRY'
+                            bat '''
+                              docker tag devops adedo2009/devops:latest
+                              docker tag devops adedo2009/devops:${BUILD_NUMBER}
+                              docker push -a adedo2009/devops
+                            '''
                         } else {
-                            sh 'docker tag devops adedo2009/devops:latest'
-                            sh 'docker tag devops adedo2009/devops:${BUILD_NUMBER}'
-                            sh 'docker push -a adedo2009/devops'
+                            sh '''
+                              docker tag devops adedo2009/devops:latest
+                              docker tag devops adedo2009/devops:${BUILD_NUMBER}
+                              docker push -a adedo2009/devops
+                            '''
                         }
                     }catch(Exception e){
                         echo 'Exception Pushing Docker Build'
@@ -222,11 +278,13 @@ pipeline {
                          bat 'docker system prune -a --volumes -f'
                          bat 'docker logout'
                     } else {
-                         sh '/usr/bin/python3 clean_environment.py'
-                         sh 'docker-compose -f docker-compose.yml down --remove-orphans -v'
-                         sh 'docker rmi adedo2009/devops:latest'
-                         sh 'docker system prune -a --volumes -f'
-                         sh 'docker logout'
+                         sh '''
+                            /usr/bin/python3 clean_environment.py
+                             sh 'docker-compose -f docker-compose.yml down --remove-orphans -v
+                             sh 'docker rmi adedo2009/devops:latest
+                             sh 'docker system prune -a --volumes -f
+                             sh 'docker logout
+                         '''
                     }
                 }catch(Exception e){
                         echo 'Exception docker compose starting container'
