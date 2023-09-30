@@ -48,16 +48,12 @@ pipeline {
                                docker rmi adedo2009/devops:latest
                                docker system prune -a --volumes -f
                                docker logout
-                               kill -9 $(lsof -t -i :5001)
-                               kill -9 $(lsof -t -i :5003)
                              '''
                         } else {
                             sh '''
                                docker-compose -f docker-compose.yml down --remove-orphans -v
                                docker system prune -a --volumes -f
                                docker logout
-                               kill -9 $(lsof -t -i :5001)
-                               kill -9 $(lsof -t -i :5003)
                              '''
                         }
                     }catch(Exception e){
