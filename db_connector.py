@@ -163,8 +163,8 @@ def populate_config_table():
         }
 
         try:
-            select_query = "SELECT url, user_name FROM config WHERE url = %s"
-            cursor.execute(select_query, 'http://127.0.0.1:5003/users/')
+            select_query = "SELECT url, user_name FROM config WHERE url = %s AND user_name = %s"
+            cursor.execute(select_query, ('http://127.0.0.1:5003/users/', 'john'))
             result = cursor.fetchone()
             if not result:
                 try:
