@@ -91,6 +91,24 @@ pipeline {
                 git 'https://github.com/Fred090821/devops.git'
             }
         }
+
+        stage(' Start Back End Server...') {
+            steps {
+            echo '=== Start Back End Server ==='
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat 'start/min /usr/bin/python3 rest_app.py'
+                        } else {
+                            sh 'nohup /usr/bin/python3 rest_app.py &'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Running Back End Server'
+                        error('Aborting The Build')
+                    }
+                }
+            }
+        }
         stage(' Docker run backend testing First Thing===>') {
             steps {
             echo '=== Docker run backend testing First Thing ==='
@@ -105,23 +123,6 @@ pipeline {
                         }
                     }catch(Exception e){
                         echo 'Exception Running Back End Test'
-                        error('Aborting The Build')
-                    }
-                }
-            }
-        }
-        stage(' Start Back End Server...') {
-            steps {
-            echo '=== Start Back End Server ==='
-                script {
-                    try{
-                        if (checkOs() == 'Windows') {
-                            bat 'start/min /usr/bin/python3 rest_app.py'
-                        } else {
-                            sh 'nohup /usr/bin/python3 rest_app.py &'
-                        }
-                    }catch(Exception e){
-                        echo 'Exception Running Back End Server'
                         error('Aborting The Build')
                     }
                 }
