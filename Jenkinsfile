@@ -169,13 +169,16 @@ pipeline {
         }
         stage(' Start Rest Containers ') {
             steps {
+               echo 'Start containers using docker compose ===> '
                script {
                     try{
                         if (checkOs() == 'Windows') {
                             bat 'docker-compose -f docker-compose.yml up -d --wait'
                             bat 'docker-compose ps'
                         } else {
+                            echo 'docker-compose -f docker-compose.yml up -d --wait ===> '
                             sh 'docker-compose -f docker-compose.yml up -d --wait'
+                            echo 'docker-compose -f docker-compose.yml ps ===> '
                             sh 'docker-compose -f docker-compose.yml ps'
                         }
                     }catch(Exception e){
