@@ -10,7 +10,7 @@ pipeline {
        dockerImage = ''
    }
     stages {
-         stage(' checkout ') {
+         stage(' Checkout Devops Code') {
             steps {
                 script {
                     properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }
-        stage(' run frontend =====>') {
+        stage(' Start Front End Server... ') {
             steps {
                 script {
                     try{
@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-        stage(' run backend testing =====>') {
+        stage(' Run Back End Tests ') {
             steps {
                 script {
                     try{
@@ -67,7 +67,7 @@ pipeline {
                 }
             }
         }
-        stage(' run frontend testing =====>') {
+        stage(' Run Front End Tests ') {
             steps {
                 script {
                     try{
@@ -83,7 +83,7 @@ pipeline {
                 }
             }
         }
-        stage(' run combined testing =====>') {
+        stage(' Run Combine Tests ') {
             steps {
                 script {
                     try{
@@ -99,7 +99,7 @@ pipeline {
                 }
             }
         }
-        stage(' Clean the environment =====>') {
+        stage(' Clean Environment After Tests ') {
             steps {
                 script {
                     try{
@@ -115,7 +115,7 @@ pipeline {
                 }
             }
         }
-        stage('Docker Build Rest API image =====>') {
+        stage(' Docker Build Back End Image ') {
             steps {
                 script {
                     try{
@@ -131,7 +131,7 @@ pipeline {
                 }
             }
         }
-        stage(' Login to Docker Hub =====>') {
+        stage(' Log In To Docker hub ') {
             steps {
                 script {
                     try{
@@ -147,7 +147,7 @@ pipeline {
                 }
             }
         }
-        stage('Docker Tag & Push Image =====>') {
+        stage(' Tag & Push Rest Image ') {
             steps {
                 script {
                     try{
@@ -167,24 +167,24 @@ pipeline {
                 }
             }
         }
-//         stage('Start Containers with docker compose =====>') {
-//             steps {
-//                script {
-//                     try{
-//                         if (checkOs() == 'Windows') {
-//                             bat 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml up -d --wait'
-//                             bat 'docker-compose ps'
-//                         } else {
-//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml up -d --wait'
-//                             sh 'docker-compose -f /Users/jaydenassi/Documents/GitHub/devops/docker-compose.yml ps'
-//                         }
-//                     }catch(Exception e){
-//                         echo 'Exception docker compose starting container'
-//                         error('Aborting the build')
-//                     }
-//                 }
-//             }
-//         }
+        stage(' Start Rest Containers ') {
+            steps {
+               script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            bat 'docker-compose -f docker-compose.yml up -d --wait'
+                            bat 'docker-compose ps'
+                        } else {
+                            sh 'docker-compose -f docker-compose.yml up -d --wait'
+                            sh 'docker-compose -f docker-compose.yml ps'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception docker compose starting container'
+                        error('Aborting the build')
+                    }
+                }
+            }
+        }
 //         stage(' Docker run backend testing ===>') {
 //             steps {
 //                 script {
