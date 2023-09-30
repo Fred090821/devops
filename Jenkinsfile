@@ -193,6 +193,7 @@ pipeline {
                 script {
                     try{
                         if (checkOs() == 'Windows') {
+                            echo '/usr/bin/python3 backend_testing.py '
                             bat '/usr/bin/python3 backend_testing.py'
                         } else {
                             echo '/usr/bin/python3 backend_testing.py '
