@@ -12,6 +12,7 @@ pipeline {
     stages {
         stage(' Verify Tooling ') {
             steps {
+            echo '=== Verify Tooling ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -19,14 +20,14 @@ pipeline {
                                docker version
                                docker info
                                docker compose version
-                               python --version
+                               python3 --version
                             '''
                         } else {
                             sh '''
                               docker version
                               docker info
                               docker compose version
-                              python --version
+                              python3 --version
                             '''
                         }
                     }catch(Exception e){
@@ -38,6 +39,7 @@ pipeline {
         }
         stage(' Prune Docker Data ') {
             steps {
+            echo '=== Prune Docker Data ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -46,13 +48,16 @@ pipeline {
                                docker rmi adedo2009/devops:latest
                                docker system prune -a --volumes -f
                                docker logout
+                               kill -9 $(lsof -t -i :5001)
+                               kill -9 $(lsof -t -i :5003)
                              '''
                         } else {
                             sh '''
                                docker-compose -f docker-compose.yml down --remove-orphans -v
-                               docker rmi adedo2009/devops:latest
                                docker system prune -a --volumes -f
                                docker logout
+                               kill -9 $(lsof -t -i :5001)
+                               kill -9 $(lsof -t -i :5003)
                              '''
                         }
                     }catch(Exception e){
@@ -62,8 +67,9 @@ pipeline {
                 }
             }
         }
-         stage(' Checkout Devops Code') {
+         stage(' Checkout Devops Code ') {
             steps {
+            echo '=== Checkout Devops Code ==='
                 script {
                     properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
                 }
@@ -72,6 +78,7 @@ pipeline {
         }
         stage(' Start Back End Server...') {
             steps {
+            echo '=== Start Back End Server ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -88,6 +95,7 @@ pipeline {
         }
         stage(' Start Front End Server... ') {
             steps {
+            echo '=== Start Front End Server ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -105,6 +113,7 @@ pipeline {
 
         stage(' Run Back End Tests ') {
             steps {
+            echo '=== Run Back End Tests ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -121,6 +130,7 @@ pipeline {
         }
         stage(' Run Front End Tests ') {
             steps {
+            echo '=== Run Front End Tests ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -137,6 +147,7 @@ pipeline {
         }
         stage(' Run Combine Tests ') {
             steps {
+            echo '=== Run Combine Tests ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -153,6 +164,7 @@ pipeline {
         }
         stage(' Clean Environment After Tests ') {
             steps {
+            echo '=== Clean Environment After Tests ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -166,6 +178,25 @@ pipeline {
                         }
                     }catch(Exception e){
                         echo 'Exception Cleaning The Environment'
+                        error('Aborting The Build')
+                    }
+                }
+            }
+        }
+        stage(' Docker run backend testing ===>') {
+            steps {
+            echo '=== Docker run backend testing After Cleaning The Environment ==='
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            echo '/usr/bin/python3 backend_testing.py '
+                            bat '/usr/bin/python3 backend_testing.py'
+                        } else {
+                            echo '/usr/bin/python3 backend_testing.py '
+                            sh '/usr/bin/python3 backend_testing.py'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Running Back End Test'
                         error('Aborting The Build')
                     }
                 }
@@ -189,6 +220,7 @@ pipeline {
         }
         stage(' Log In To Docker hub ') {
             steps {
+            echo '=== Log In To Docker hub ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -205,6 +237,7 @@ pipeline {
         }
         stage(' Tag & Push Rest Image ') {
             steps {
+            echo '=== Tag & Push Rest Image ==='
                 script {
                     try{
                         if (checkOs() == 'Windows') {
@@ -248,27 +281,11 @@ pipeline {
 //                 }
 //             }
 //         }
-        stage(' Docker run backend testing ===>') {
-            steps {
-                script {
-                    try{
-                        if (checkOs() == 'Windows') {
-                            echo '/usr/bin/python3 backend_testing.py '
-                            bat '/usr/bin/python3 backend_testing.py'
-                        } else {
-                            echo '/usr/bin/python3 backend_testing.py '
-                            sh '/usr/bin/python3 backend_testing.py'
-                        }
-                    }catch(Exception e){
-                        echo 'Exception Running Back End Test'
-                        error('Aborting The Build')
-                    }
-                }
-            }
-        }
+
     }
     post {
         always {
+        echo '=== post Clean Environment ==='
             script {
                 try{
                     if (checkOs() == 'Windows') {
