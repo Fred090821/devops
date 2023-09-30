@@ -10,25 +10,25 @@ pipeline {
        dockerImage = ''
    }
     stages {
-        stage(' Docker run backend testing First Thing===>') {
-            steps {
-            echo '=== Docker run backend testing First Thing ==='
-                script {
-                    try{
-                        if (checkOs() == 'Windows') {
-                            echo '/usr/bin/python3 backend_testing.py '
-                            bat '/usr/bin/python3 backend_testing.py'
-                        } else {
-                            echo '/usr/bin/python3 backend_testing.py '
-                            sh '/usr/bin/python3 backend_testing.py'
-                        }
-                    }catch(Exception e){
-                        echo 'Exception Running Back End Test'
-                        error('Aborting The Build')
-                    }
-                }
-            }
-        }
+//         stage(' Docker run backend testing First Thing===>') {
+//             steps {
+//             echo '=== Docker run backend testing First Thing ==='
+//                 script {
+//                     try{
+//                         if (checkOs() == 'Windows') {
+//                             echo '/usr/bin/python3 backend_testing.py '
+//                             bat '/usr/bin/python3 backend_testing.py'
+//                         } else {
+//                             echo '/usr/bin/python3 backend_testing.py '
+//                             sh '/usr/bin/python3 backend_testing.py'
+//                         }
+//                     }catch(Exception e){
+//                         echo 'Exception Running Back End Test'
+//                         error('Aborting The Build')
+//                     }
+//                 }
+//             }
+//         }
         stage(' Verify Tooling ') {
             steps {
             echo '=== Verify Tooling ==='
@@ -89,6 +89,25 @@ pipeline {
                     properties([pipelineTriggers([pollSCM('*/30 * * * *')])])
                 }
                 git 'https://github.com/Fred090821/devops.git'
+            }
+        }
+        stage(' Docker run backend testing First Thing===>') {
+            steps {
+            echo '=== Docker run backend testing First Thing ==='
+                script {
+                    try{
+                        if (checkOs() == 'Windows') {
+                            echo '/usr/bin/python3 backend_testing.py '
+                            bat '/usr/bin/python3 backend_testing.py'
+                        } else {
+                            echo '/usr/bin/python3 backend_testing.py '
+                            sh '/usr/bin/python3 backend_testing.py'
+                        }
+                    }catch(Exception e){
+                        echo 'Exception Running Back End Test'
+                        error('Aborting The Build')
+                    }
+                }
             }
         }
         stage(' Start Back End Server...') {
