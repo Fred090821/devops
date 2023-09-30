@@ -279,7 +279,7 @@ pipeline {
 //         }
 
     }
-//     post {
+    post {
 //         always {
 //         echo '=== post Clean Environment ==='
 //             script {
