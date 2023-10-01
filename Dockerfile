@@ -1,6 +1,6 @@
 FROM python:3.8-alpine
 LABEL authors="Fred Assi"
-LABEL maintainer="assifred2005@gmail.com"
+LABEL maintainer="trainingfred2023@gmail.com"
 WORKDIR /app
 COPY rest_app.py /app
 COPY config.py /app
