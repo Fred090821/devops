@@ -1,8 +1,16 @@
 pipeline {
     agent any
-    options{
-        buildDiscarder(logRotator(numToKeepStr:'2', daysToKeepStr:'1'))
+    agent any // Define your agent here, if needed
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '2', daysToKeepStr: '1'))
     }
+
+    environment {
+        registry = 'adedo2009'
+        // Define environment variables here, if needed
+    }
+
     stages {
         stage(' Verify Tooling ') {
             steps {
