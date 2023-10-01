@@ -1,8 +1,8 @@
 pipeline {
     agent any
-   options{
-       buildDiscarder(logRotator(numToKeepStr:'2', daysToKeepStr:'1'))
-   }
+    options{
+        buildDiscarder(logRotator(numToKeepStr:'2', daysToKeepStr:'1'))
+    }
     stages {
         stage(' Verify Tooling ') {
             steps {
@@ -158,12 +158,6 @@ pipeline {
                             /usr/bin/python3 clean_environment.py
                          '''
                     }
-                    cleanWs(cleanWhenNotBuilt: false,
-                        deleteDirs: true,
-                        disableDeferredWipeout: true,
-                        notFailBuild: true,
-                        patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
-                               [pattern: '.propsfile', type: 'EXCLUDE']])
                 }catch(Exception e){
                         echo 'Exception docker compose starting container'
                         error('Aborting the build')
