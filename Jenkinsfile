@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    agent any // Define your agent here, if needed
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '2', daysToKeepStr: '1'))
@@ -134,43 +133,25 @@ pipeline {
                 }
             }
         }
-        stage(' Clean Environment After Tests ') {
-            steps {
-            echo '=== Clean Environment After Tests ==='
-                script {
-                    try{
-                        if (checkOs() == 'Windows') {
-                            bat '''
-                               /usr/bin/python3 clean_environment.py
-                             '''
-                        } else {
-                             sh '/usr/bin/python3 clean_environment.py'
-                        }
-                    }catch(Exception e){
-                        echo 'Exception Cleaning The Environment'
-                        error('Aborting The Build')
-                    }
-                }
-            }
-        }
     }
     post {
         always {
-        echo '=== post Clean Environment ==='
+        echo '=== Clean Environment After Tests ==='
             script {
                 try{
                     if (checkOs() == 'Windows') {
-                         bat '/usr/bin/python3 clean_environment.py'
-                    } else {
-                         sh '''
-                            /usr/bin/python3 clean_environment.py
+                        bat '''
+                           /usr/bin/python3 clean_environment.py
                          '''
+                    } else {
+                         sh '/usr/bin/python3 clean_environment.py'
                     }
                 }catch(Exception e){
-                        echo 'Exception docker compose starting container'
-                        error('Aborting the build')
+                    echo 'Exception Cleaning The Environment'
+                    error('Aborting The Build')
                 }
             }
+
         }
         success {
             echo 'All test run successfully'
