@@ -59,6 +59,42 @@ class IntegrationTests(TestCase):
         # Assert the actual JSON content matches the expected JSON content
         assert extract_user_name == self.user_name, f"Unexpected JSON content: {extract_user_name}"
 
+    def test_step_3_database_verification_for_john_created_200(self):
+        logging.info(" Test database for creation of user john using parametrized query")
+
+        conn = None
+        cursor = None
+        try:
+            # Connect to the database
+            conn = connect_to_database()
+            if not conn:
+                return "Database connection error."
+
+            cursor = conn.cursor()
+
+            try:
+                select_query = "SELECT user_id, user_name FROM users WHERE user_id = %s"
+                cursor.execute(select_query, str(pytest.last_added_user_id, ))
+                result = cursor.fetchone()
+                if result:
+                    logging.info(self.user_name + " = " + str(result[1]))
+                    assert result[1] == self.user_name
+                else:
+                    assert False, "condition not met"
+
+            except pymysql.MySQLError as query_error:
+                logging.info(f"Query execution error: {query_error}")
+
+        finally:
+            logging.info("close all connections")
+            # Close the connection and cursor
+            close_connection(conn, cursor)
+
+    # @classmethod
+    # def tearDownClass(cls):
+    #     delete_all_rows('users')
+    #     delete_all_rows('config')
+
 
 if __name__ == "__main__":
     unittest.main()
